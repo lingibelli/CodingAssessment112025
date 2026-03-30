@@ -53,4 +53,15 @@ class CodeToRefactorTest {
         assertEquals(255, nameWith255Chars.length());
 
     }
+
+    @Test
+    void shouldCreateFreshPeopleListEveryCall() {
+        CodeToRefactor.BirthingUnit unit = new CodeToRefactor.BirthingUnit();
+
+        List<CodeToRefactor.People> firstGroup = unit.getPeople(3);
+        List<CodeToRefactor.People> secondGroup = unit.getPeople(3);
+
+        assertEquals(3, firstGroup.size());
+        assertEquals(3, secondGroup.size());
+}
 }
