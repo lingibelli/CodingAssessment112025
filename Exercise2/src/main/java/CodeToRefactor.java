@@ -49,10 +49,10 @@ public class CodeToRefactor {
          * @param j
          * @return List<Object>
          */
-        public List<Person> getPeople(int i)
+        public List<Person> createPeople(int numberOfPeople)
         {
             List<Person> people = new ArrayList<>();
-            for (int j = 0; j < i; j++) {
+            for (int j = 0; j < numberOfPeople; j++) {
                 try 
                 {
                     // Creates a dandon Name
@@ -73,12 +73,12 @@ public class CodeToRefactor {
             return people;
         }
 
-        private List<Person> getBobs(boolean olderThan30) {
+        private List<Person> findBobs(boolean olderThan30) {
             OffsetDateTime threshold = OffsetDateTime.now().minusDays(30 * 365);
             return olderThan30 ? people.stream().filter(x -> x.getName().equals("Bob") && !x.getDob().isBefore(threshold)).collect(Collectors.toList()) : people.stream().filter(x -> x.getName().equals("Bob")).collect(Collectors.toList());
         }
 
-        public String getMarried(Person p, String lastName)
+        public String formatPersonFullName(Person p, String lastName)
         {
             String fullName = p.getName() + " " + lastName;
             if (lastName.contains("test"))

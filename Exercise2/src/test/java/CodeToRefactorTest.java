@@ -15,7 +15,7 @@ class CodeToRefactorTest {
     @Test
     void shouldGenerateCorrectNumberOfPeople() {
         CodeToRefactor.PeoplePool unit = new CodeToRefactor.PeoplePool();
-        List<CodeToRefactor.Person> people = unit.getPeople(5);
+        List<CodeToRefactor.Person> people = unit.createPeople(5);
         
         assertEquals(5, people.size());
     }
@@ -25,7 +25,7 @@ class CodeToRefactorTest {
         CodeToRefactor.Person person = new CodeToRefactor.Person("Bob");
         CodeToRefactor.PeoplePool unit = new CodeToRefactor.PeoplePool();
 
-        String result = unit.getMarried(person, "Smith");
+        String result = unit.formatPersonFullName(person, "Smith");
 
         assertEquals("Bob Smith", result);
     }
@@ -35,7 +35,7 @@ class CodeToRefactorTest {
         CodeToRefactor.Person person = new CodeToRefactor.Person("James");
         CodeToRefactor.PeoplePool unit = new CodeToRefactor.PeoplePool();
 
-        String result = unit.getMarried(person, "testUser");
+        String result = unit.formatPersonFullName(person, "testUser");
 
         assertEquals("James", result);
     }
@@ -48,7 +48,7 @@ class CodeToRefactorTest {
 
         String longLastName = "A".repeat(300);
 
-        String nameWith255Chars = unit.getMarried(person, longLastName);
+        String nameWith255Chars = unit.formatPersonFullName(person, longLastName);
 
         assertEquals(255, nameWith255Chars.length());
 
@@ -58,8 +58,8 @@ class CodeToRefactorTest {
     void shouldCreateFreshPeopleListEveryCall() {
         CodeToRefactor.PeoplePool unit = new CodeToRefactor.PeoplePool();
 
-        List<CodeToRefactor.Person> firstGroup = unit.getPeople(3);
-        List<CodeToRefactor.Person> secondGroup = unit.getPeople(3);
+        List<CodeToRefactor.Person> firstGroup = unit.createPeople(3);
+        List<CodeToRefactor.Person> secondGroup = unit.createPeople(3);
 
         assertEquals(3, firstGroup.size());
         assertEquals(3, secondGroup.size());
