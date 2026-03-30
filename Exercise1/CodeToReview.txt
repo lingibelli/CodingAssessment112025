@@ -96,6 +96,7 @@ public class CodeToRefactor {
             return people;
         }
 
+        // Why is getBobs private.
         private List<People> getBobs(boolean olderThan30) {
             // Long single-line return with nested ternary and streams; hard to read.
             //Split into multiple lines or helper method for readability.
@@ -124,4 +125,5 @@ public class CodeToRefactor {
     1. Use descriptive and appropriate name to variables, methods and classes.
     2. Use constants for magic numbers like 365, 255, 18,85 etc
     3. Use enums or array for random names.
-    4. Avoid hardcoded values in the code but make use of static constant variables. */
+    4. Avoid hardcoded values in the code but make use of static constant variables. 
+    5. Change file  extension to java*/

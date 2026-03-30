@@ -51,6 +51,7 @@ public class CodeToRefactor {
          */
         public List<People> getPeople(int i)
         {
+            List<People> people = new ArrayList<>();
             for (int j = 0; j < i; j++) {
                 try 
                 {
