@@ -59,26 +59,20 @@ public class CodeToRefactor {
          */
         public List<Person> createPeople(int numberOfPeople)
         {
-            List<Person> people = new ArrayList<>();
-            for (int j = 0; j < numberOfPeople; j++) {
-                try 
-                {
-                    // Creates a dandon Name
-                    String name = "";
-                    Random random = new Random();
-                    if (random.nextInt(2) == 0) {
-                        name = DUMMY_FIRSTNAMES.get(0);
-                    } else { name = DUMMY_FIRSTNAMES.get(1); }
-                    // Adds new person to the list
-                    people.add(new Person(name, LocalDateTime.now().minusDays(random.nextInt(MIN_AGE, MAX_AGE) * DAYS_IN_YEAR)));
-                } 
-                catch (Exception e)
-                {
-                    // Dont think this should ever happen
-                    throw new RuntimeException("Something failed in user creation",e);
-                }
-            }
+            people.clear();
+            for (int j = 0; j < numberOfPeople; j++) {  
+                    people.add(createRandomPerson());
+            }   
             return people;
+        }
+
+        private Person createRandomPerson() {
+            Random random = new Random();
+            String personName = DUMMY_FIRSTNAMES.get(random.nextInt(DUMMY_FIRSTNAMES.size()));
+            int age = random.nextInt(MIN_AGE, MAX_AGE);
+            LocalDateTime dob = LocalDateTime.now().minusYears(age);
+
+            return new Person(personName, dob);
         }
 
         private List<Person> findBobs(boolean olderThan30) {
