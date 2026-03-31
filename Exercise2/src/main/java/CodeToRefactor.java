@@ -5,20 +5,23 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.time.Duration;
+import java.time.Period;
 
 public class CodeToRefactor {
     
-    public static class People {
-        private static final OffsetDateTime Under16 = OffsetDateTime.now().minusYears(15);
+    public static class Person {
+
+        private static final int DEFAULT_AGE_YEARS = 15;
+        
         private String name;
         private OffsetDateTime dob;
 
-        public People(String name)
+        public Person(String name)
         {
-            this(name, Under16.toLocalDateTime());
+            this(name, LocalDateTime.now().minusYears(DEFAULT_AGE_YEARS));
         }
 
-        public People(String name, LocalDateTime dob) {
+        public Person(String name, LocalDateTime dob) {
             this.name = name;
             this.dob = dob.atOffset(OffsetDateTime.now().getOffset());
         }
@@ -31,16 +34,31 @@ public class CodeToRefactor {
         public OffsetDateTime getDob() {
             return dob;
         }
-    }
 
-    public static class BirthingUnit
+        public int getAge() {
+            LocalDateTime birthDate = dob.toLocalDateTime();
+            LocalDateTime now = LocalDateTime.now();
+            return Period.between(birthDate.toLocalDate(), now.toLocalDate()).getYears();
+        }
+    }
+    
+
+    public static class PeoplePool
     {
         /**
          * MaxItemsToRetrieve
          */
-        private List<People> people;
+        private List<Person> people;
 
-        public BirthingUnit() {
+        private static final int MAX_NAME_LENGTH = 255;
+        private static final int MIN_AGE = 18;
+        private static final int MAX_AGE = 85;
+        private static final int DAYS_IN_YEAR = 365;
+        private static final int THIRTY_YEARS = 30;
+        private static final int START_OF_STRING = 0;
+        private static final List<String> DUMMY_FIRSTNAMES = List.of("Bob", "Betty","James","Ruby");
+
+        public PeoplePool() {
             people = new ArrayList<>();
         }
 
@@ -49,42 +67,45 @@ public class CodeToRefactor {
          * @param j
          * @return List<Object>
          */
-        public List<People> getPeople(int i)
+        public List<Person> createPeople(int numberOfPeople)
         {
-            List<People> people = new ArrayList<>();
-            for (int j = 0; j < i; j++) {
-                try 
-                {
-                    // Creates a dandon Name
-                    String name = "";
-                    Random random = new Random();
-                    if (random.nextInt(2) == 0) {
-                        name = "Bob";
-                    } else { name = "Betty"; }
-                    // Adds new people to the list
-                    people.add(new People(name, LocalDateTime.now().minusDays(random.nextInt(18, 85) * 365)));
-                } 
-                catch (Exception e)
-                {
-                    // Dont think this should ever happen
-                    throw new RuntimeException("Something failed in user creation",e);
-                }
-            }
+            people.clear();
+            for (int j = 0; j < numberOfPeople; j++) {  
+                    people.add(createRandomPerson());
+            }   
             return people;
         }
 
-        private List<People> getBobs(boolean olderThan30) {
-            OffsetDateTime threshold = OffsetDateTime.now().minusDays(30 * 365);
-            return olderThan30 ? people.stream().filter(x -> x.getName().equals("Bob") && !x.getDob().isBefore(threshold)).collect(Collectors.toList()) : people.stream().filter(x -> x.getName().equals("Bob")).collect(Collectors.toList());
+        private Person createRandomPerson() {
+            Random random = new Random();
+            String personName = DUMMY_FIRSTNAMES.get(random.nextInt(DUMMY_FIRSTNAMES.size()));
+            int age = random.nextInt(MIN_AGE, MAX_AGE);
+            LocalDateTime dob = LocalDateTime.now().minusYears(age);
+
+            return new Person(personName, dob);
         }
 
-        public String getMarried(People p, String lastName)
+        public void addPerson(Person person) {
+            people.add(person);
+        }
+
+        private List<Person> findPerson(String firstName,boolean olderThan30) {
+            return people.stream()
+                         .filter(p -> p.getName().equals(firstName) && (!olderThan30 || p.getAge() > THIRTY_YEARS))
+                        .collect(Collectors.toList());
+        }
+
+        public List<Person> getPeopleByFirstnameWithAge30Filter(String firstName, boolean olderThan30) {
+            return findPerson(firstName, olderThan30);
+        }
+
+        public String formatPersonFullName(Person person, String lastName)
         {
-            String fullName = p.getName() + " " + lastName;
+            String fullName = person.getName() + " " + lastName;
             if (lastName.contains("test"))
-                return p.getName();
-            if (fullName.length() > 255) {
-                fullName = (p.getName() + " " + lastName).substring(0, 255);
+                return person.getName();
+            if (fullName.length() > MAX_NAME_LENGTH) {
+                fullName = (person.getName() + " " + lastName).substring(START_OF_STRING, MAX_NAME_LENGTH);
             }
             return fullName;
         }
