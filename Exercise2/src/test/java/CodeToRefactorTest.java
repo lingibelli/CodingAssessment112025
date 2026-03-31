@@ -76,7 +76,7 @@ class CodeToRefactorTest {
         peoplePool.addPerson(new CodeToRefactor.Person("Bob", LocalDateTime.now().minusYears(40)));
         peoplePool.addPerson(new CodeToRefactor.Person("Alice", LocalDateTime.now().minusYears(50)));
 
-        List<CodeToRefactor.Person> result = peoplePool.getPeopleOver30ByName("Bob", false);
+        List<CodeToRefactor.Person> result = peoplePool.getPeopleByFirstnameWithAge30Filter("Bob", false);
 
         assertEquals(2, result.size());
     }
@@ -90,7 +90,7 @@ class CodeToRefactorTest {
         peoplePool.addPerson(new CodeToRefactor.Person("Bob", LocalDateTime.now().minusYears(40)));
         peoplePool.addPerson(new CodeToRefactor.Person("Alice", LocalDateTime.now().minusYears(50)));
 
-        List<CodeToRefactor.Person> result = peoplePool.getPeopleOver30ByName("Bob", true);
+        List<CodeToRefactor.Person> result = peoplePool.getPeopleByFirstnameWithAge30Filter("Bob", true);
 
         assertEquals(1, result.size());
     }
@@ -106,7 +106,7 @@ class CodeToRefactorTest {
         peoplePool.addPerson(new CodeToRefactor.Person("James", LocalDateTime.now().minusYears(50)));
         peoplePool.addPerson(new CodeToRefactor.Person("Colin", LocalDateTime.now().minusYears(50)));
 
-        List<CodeToRefactor.Person> result = peoplePool.getPeopleOver30ByName("Rob", true);
+        List<CodeToRefactor.Person> result = peoplePool.getPeopleByFirstnameWithAge30Filter("Rob", true);
 
         assertEquals(0, result.size());
     }

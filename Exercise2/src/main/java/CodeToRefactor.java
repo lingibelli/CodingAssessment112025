@@ -95,7 +95,7 @@ public class CodeToRefactor {
                         .collect(Collectors.toList());
         }
 
-        public List<Person> getPeopleOver30ByName(String firstName, boolean olderThan30) {
+        public List<Person> getPeopleByFirstnameWithAge30Filter(String firstName, boolean olderThan30) {
             return findPerson(firstName, olderThan30);
         }
 
