@@ -5,18 +5,20 @@ import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
 import java.time.Duration;
+import java.time.Period;
 
 public class CodeToRefactor {
     
     public static class Person {
-        private static final int FIFTEEN_YEARS = 15;
-        private static final OffsetDateTime Under16 = OffsetDateTime.now().minusYears(FIFTEEN_YEARS);
+
+        private static final int DEFAULT_AGE_YEARS = 15;
+        
         private String name;
         private OffsetDateTime dob;
 
         public Person(String name)
         {
-            this(name, Under16.toLocalDateTime());
+            this(name, LocalDateTime.now().minusYears(DEFAULT_AGE_YEARS));
         }
 
         public Person(String name, LocalDateTime dob) {
@@ -32,7 +34,14 @@ public class CodeToRefactor {
         public OffsetDateTime getDob() {
             return dob;
         }
+
+        public int getAge() {
+            LocalDateTime birthDate = dob.toLocalDateTime();
+            LocalDateTime now = LocalDateTime.now();
+            return Period.between(birthDate.toLocalDate(), now.toLocalDate()).getYears();
+        }
     }
+    
 
     public static class PeoplePool
     {
@@ -46,6 +55,7 @@ public class CodeToRefactor {
         private static final int MAX_AGE = 85;
         private static final int DAYS_IN_YEAR = 365;
         private static final int THIRTY_YEARS = 30;
+        private static final int START_OF_STRING = 0;
         private static final List<String> DUMMY_FIRSTNAMES = List.of("Bob", "Betty","James","Ruby");
 
         public PeoplePool() {
@@ -76,8 +86,9 @@ public class CodeToRefactor {
         }
 
         private List<Person> findBobs(boolean olderThan30) {
-            OffsetDateTime threshold = OffsetDateTime.now().minusDays(THIRTY_YEARS * DAYS_IN_YEAR);
-            return olderThan30 ? people.stream().filter(x -> x.getName().equals("Bob") && !x.getDob().isBefore(threshold)).collect(Collectors.toList()) : people.stream().filter(x -> x.getName().equals("Bob")).collect(Collectors.toList());
+            return people.stream()
+                         .filter(p -> p.getName().equals("Bob") && (!olderThan30 || p.getAge() > THIRTY_YEARS))
+                        .collect(Collectors.toList());
         }
 
         public String formatPersonFullName(Person person, String lastName)
@@ -86,7 +97,7 @@ public class CodeToRefactor {
             if (lastName.contains("test"))
                 return person.getName();
             if (fullName.length() > MAX_NAME_LENGTH) {
-                fullName = (person.getName() + " " + lastName).substring(0, MAX_NAME_LENGTH);
+                fullName = (person.getName() + " " + lastName).substring(START_OF_STRING, MAX_NAME_LENGTH);
             }
             return fullName;
         }
