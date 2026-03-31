@@ -1,6 +1,8 @@
 import org.junit.jupiter.api.Test;
 import static org.junit.jupiter.api.Assertions.*;
 import java.util.List;
+import java.util.ArrayList;
+import java.time.LocalDateTime;
 
 class CodeToRefactorTest {
 
@@ -63,5 +65,49 @@ class CodeToRefactorTest {
 
         assertEquals(3, firstGroup.size());
         assertEquals(3, secondGroup.size());
-}
+    }
+
+    @Test
+    void shouldReturnAllBobs() {
+
+        CodeToRefactor.PeoplePool peoplePool = new CodeToRefactor.PeoplePool();
+       
+        peoplePool.addPerson(new CodeToRefactor.Person("Bob", LocalDateTime.now().minusYears(25)));
+        peoplePool.addPerson(new CodeToRefactor.Person("Bob", LocalDateTime.now().minusYears(40)));
+        peoplePool.addPerson(new CodeToRefactor.Person("Alice", LocalDateTime.now().minusYears(50)));
+
+        List<CodeToRefactor.Person> result = peoplePool.getPeopleOver30ByName("Bob", false);
+
+        assertEquals(2, result.size());
+    }
+
+    @Test
+    void shouldReturnBobsOlderThan30() {
+
+        CodeToRefactor.PeoplePool peoplePool = new CodeToRefactor.PeoplePool();
+       
+        peoplePool.addPerson(new CodeToRefactor.Person("Bob", LocalDateTime.now().minusYears(25)));
+        peoplePool.addPerson(new CodeToRefactor.Person("Bob", LocalDateTime.now().minusYears(40)));
+        peoplePool.addPerson(new CodeToRefactor.Person("Alice", LocalDateTime.now().minusYears(50)));
+
+        List<CodeToRefactor.Person> result = peoplePool.getPeopleOver30ByName("Bob", true);
+
+        assertEquals(1, result.size());
+    }
+
+    @Test
+    void shouldReturnEmptyWhenNoMatch() {
+
+        CodeToRefactor.PeoplePool peoplePool = new CodeToRefactor.PeoplePool();
+       
+        peoplePool.addPerson(new CodeToRefactor.Person("Bob", LocalDateTime.now().minusYears(25)));
+        peoplePool.addPerson(new CodeToRefactor.Person("Bob", LocalDateTime.now().minusYears(40)));
+        peoplePool.addPerson(new CodeToRefactor.Person("Alice", LocalDateTime.now().minusYears(50)));
+        peoplePool.addPerson(new CodeToRefactor.Person("James", LocalDateTime.now().minusYears(50)));
+        peoplePool.addPerson(new CodeToRefactor.Person("Colin", LocalDateTime.now().minusYears(50)));
+
+        List<CodeToRefactor.Person> result = peoplePool.getPeopleOver30ByName("Rob", true);
+
+        assertEquals(0, result.size());
+    }
 }

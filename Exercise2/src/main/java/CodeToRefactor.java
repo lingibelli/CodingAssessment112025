@@ -85,10 +85,18 @@ public class CodeToRefactor {
             return new Person(personName, dob);
         }
 
-        private List<Person> findBobs(boolean olderThan30) {
+        public void addPerson(Person person) {
+            people.add(person);
+        }
+
+        private List<Person> findPerson(String firstName,boolean olderThan30) {
             return people.stream()
-                         .filter(p -> p.getName().equals("Bob") && (!olderThan30 || p.getAge() > THIRTY_YEARS))
+                         .filter(p -> p.getName().equals(firstName) && (!olderThan30 || p.getAge() > THIRTY_YEARS))
                         .collect(Collectors.toList());
+        }
+
+        public List<Person> getPeopleOver30ByName(String firstName, boolean olderThan30) {
+            return findPerson(firstName, olderThan30);
         }
 
         public String formatPersonFullName(Person person, String lastName)
